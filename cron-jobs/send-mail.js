@@ -1,6 +1,6 @@
 const CronJob = require("cron").CronJob;
 const nodemailer = require("nodemailer");
-const post = require("./models/post");
+const post = require("../models/post");
 
 let transporter = nodemailer.createTransport({
   host: "smtp.ethereal.email",
