@@ -22,6 +22,13 @@ const userSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    friends: [
+      {
+        type: Object,
+        ref: "user",
+        required: false,
+      },
+    ],
   },
   { timestamps: true }
 );

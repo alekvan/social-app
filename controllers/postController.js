@@ -2,8 +2,6 @@ const response = require("../lib/response_handler");
 const Post = require("../models/post");
 const AccessControl = require("accesscontrol");
 const ac = new AccessControl();
-const cron = require("node-cron");
-const nodemailer = require("nodemailer");
 
 ac.grant("user").createOwn("post");
 ac.deny("admin").createOwn("post");

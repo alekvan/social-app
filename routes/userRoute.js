@@ -229,6 +229,8 @@ router.patch("/:id", controller.update);
  */
 router.delete("/:id", controller.remove);
 
+router.post("/addfriend", controller.addAndDeleteFriend);
+
 module.exports = router;
 
 //Model for user documented

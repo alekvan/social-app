@@ -4,7 +4,7 @@ const response = require("../lib/response_handler");
 const jwt = require("jsonwebtoken");
 
 const getAll = async (req, res) => {
-  const users = await User.find();
+  const users = await User.find().populate("friends");
 
   response(res, 200, "List of all users", { users });
 };
@@ -69,6 +69,31 @@ const login = async (req, res) => {
   }
 };
 
+const addAndDeleteFriend = async (req, res) => {
+  // action and friendId
+  const bearerToken = req.get("Authorization");
+  const token = bearerToken.substring(7, bearerToken.length);
+  const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+
+  // console.log(decoded);
+  // action 1 - add friend
+  // action 2 - delete friend
+  if (req.body.action === "add") {
+    const getFriendId = await User.findById(req.body.friendId);
+    await User.updateOne(await User.findById(decoded.id), {
+      $push: { friends: getFriendId._id },
+    });
+    response(res, 200, "Friend added");
+  }
+  if (req.body.action === "delete") {
+    const getFriendId = await User.findById(req.body.friendId);
+    await User.updateOne(await User.findById(decoded.id), {
+      $pull: { friends: getFriendId._id },
+    });
+    response(res, 200, "Friend deleted");
+  }
+};
+
 const update = async (req, res) => {
   req.body.password = bcrypt.hashSync(req.body.password);
   await User.findByIdAndUpdate(req.params.id, req.body);
@@ -93,4 +118,5 @@ module.exports = {
   login,
   update,
   remove,
+  addAndDeleteFriend,
 };
