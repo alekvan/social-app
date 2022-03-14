@@ -14,6 +14,20 @@ const postSchema = mongoose.Schema(
       type: mongoose.Types.ObjectId,
       ref: "user",
     },
+    likes: [
+      {
+        type: String,
+        ref: "user",
+        required: false,
+      },
+    ],
+    dislikes: [
+      {
+        type: String,
+        ref: "user",
+        required: false,
+      },
+    ],
   },
   { timestamps: true }
 );

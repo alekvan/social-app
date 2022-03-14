@@ -190,6 +190,8 @@ router.patch("/:id", controller.update);
  */
 router.delete("/:id", controller.remove);
 
+router.post("/:id/likes", controller.likesOnPost);
+
 module.exports = router;
 
 //Model for documentation

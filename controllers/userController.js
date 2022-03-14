@@ -54,7 +54,7 @@ const login = async (req, res) => {
         };
 
         const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, {
-          expiresIn: "5m",
+          expiresIn: "20m",
         });
 
         response(res, 200, "You have logged in successfully", { token });
@@ -74,23 +74,37 @@ const addAndDeleteFriend = async (req, res) => {
   const bearerToken = req.get("Authorization");
   const token = bearerToken.substring(7, bearerToken.length);
   const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
-
+  const getFriendId = await User.findById(req.body.friendId);
+  const userId = await User.findById(decoded.id);
   // console.log(decoded);
   // action 1 - add friend
   // action 2 - delete friend
   if (req.body.action === "add") {
-    const getFriendId = await User.findById(req.body.friendId);
-    await User.updateOne(await User.findById(decoded.id), {
-      $push: { friends: getFriendId._id },
-    });
-    response(res, 200, "Friend added");
+    if (userId.friends.includes(req.body.friendId)) {
+      response(res, 400, "Already your friend");
+    } else {
+      await User.updateOne(await User.findById(decoded.id), {
+        $push: { friends: getFriendId._id },
+      });
+      await User.updateOne(await User.findById(req.body.friendId), {
+        $push: { friends: decoded.id },
+      });
+      response(res, 200, "Friend added");
+    }
   }
+
   if (req.body.action === "delete") {
-    const getFriendId = await User.findById(req.body.friendId);
-    await User.updateOne(await User.findById(decoded.id), {
-      $pull: { friends: getFriendId._id },
-    });
-    response(res, 200, "Friend deleted");
+    if (userId.friends.includes(req.body.friendId)) {
+      response(res, 400, "Not a friend, can't delete");
+    } else {
+      await User.updateOne(await User.findById(decoded.id), {
+        $pull: { friends: getFriendId._id },
+      });
+      await User.updateOne(await User.findById(req.body.friendId), {
+        $pull: { friends: decoded.id },
+      });
+      response(res, 200, "Friend deleted");
+    }
   }
 };
 
