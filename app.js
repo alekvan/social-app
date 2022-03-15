@@ -17,7 +17,7 @@ const app = express();
 mongoose.connect("mongodb://localhost:27017/social-app");
 
 //cronJob: Sending emails on a given interval
-// require("./cron-jobs/send-mail");
+require("./cron-jobs/send-mail");
 
 //Swagger
 const swaggerOptions = {

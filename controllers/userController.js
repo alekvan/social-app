@@ -92,11 +92,10 @@ const addAndDeleteFriend = async (req, res) => {
       response(res, 200, "Friend added");
     }
   }
+  //U
 
   if (req.body.action === "delete") {
     if (userId.friends.includes(req.body.friendId)) {
-      response(res, 400, "Not a friend, can't delete");
-    } else {
       await User.updateOne(await User.findById(decoded.id), {
         $pull: { friends: getFriendId._id },
       });
@@ -104,6 +103,8 @@ const addAndDeleteFriend = async (req, res) => {
         $pull: { friends: decoded.id },
       });
       response(res, 200, "Friend deleted");
+    } else {
+      response(res, 400, "Not a friend, can't delete");
     }
   }
 };
