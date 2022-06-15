@@ -1,1 +1,1 @@
-# Back end app with EJS views
+# Back end social-app
